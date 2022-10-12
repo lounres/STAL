@@ -4,7 +4,6 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `maven-publish`
-    id("com.gradle.plugin-publish") version "1.0.0-rc-1"
 //    signing
 }
 
@@ -56,8 +55,4 @@ gradlePlugin {
             implementationClass = "com.lounres.gradle.feature.FeatureSettingsPlugin"
         }
     }
-}
-
-pluginBundle {
-    website = ""
 }
