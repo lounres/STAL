@@ -1,0 +1,8 @@
+[versions]
+tools = "0.12.0-kotlin-1.7.20-Beta"
+kotlin = "1.7.20"
+
+[libraries]
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
