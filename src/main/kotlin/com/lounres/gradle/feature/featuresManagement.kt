@@ -6,23 +6,35 @@ import org.gradle.api.Project
 public class FeaturesManagementExtension {
     internal var rootProjectSpec: ProjectStructureSpec? = null
 
-    @PublishedApi
-    internal val tagAssigners: MutableList<TagAssigner> = mutableListOf()
-    internal val tagProcessors: MutableMap<String, MutableList<Project.() -> Unit>> = mutableMapOf()
+    internal val tagAssignmentSettings : TagAssignmentSettings get() = tagAssignmentSettingsBuilder
+    internal interface TagAssignmentSettings {
+        val tagAssigners: List<TagAssigner>
+    }
+    private val tagAssignmentSettingsBuilder = TagAssignmentSettingsBuilder()
+    private class TagAssignmentSettingsBuilder: TagAssignmentSettings {
+        override val tagAssigners: MutableList<TagAssigner> = mutableListOf()
+    }
 
-    @PublishedApi
-    internal val tagAssignersCollector: TagAssignersCollector = TagAssignersCollector()
+    internal val tagProcessingSettings : TagProcessingSettings get() = tagProcessingSettingsBuilder
+    internal interface TagProcessingSettings {
+        val tagProcessors: Map<String, MutableList<Project.() -> Unit>>
+    }
+    private val tagProcessingSettingsBuilder = TagProcessingSettingsBuilder()
+    private class TagProcessingSettingsBuilder: TagProcessingSettings {
+        override val tagProcessors: MutableMap<String, MutableList<Project.() -> Unit>> = mutableMapOf()
+    }
+
+    private val tagAssignersCollector: TagAssignersCollector = TagAssignersCollector()
     public inner class TagAssignersCollector {
         public infix fun String.since( block: ProjectDescriptor.() -> Boolean) {
-            tagAssigners.add(TagAssigner(this, block))
+            tagAssignmentSettingsBuilder.tagAssigners.add(TagAssigner(this, block))
         }
     }
 
-    @PublishedApi
-    internal val tagProcessorsCollector: TagProcessorsCollector = TagProcessorsCollector()
+    private val tagProcessorsCollector: TagProcessorsCollector = TagProcessorsCollector()
     public inner class TagProcessorsCollector {
         public fun on(vararg tags: String, action: Project.() -> Unit) {
-            for (tag in tags) tagProcessors.getOrPut(tag) { mutableListOf() }.add(action)
+            for (tag in tags) tagProcessingSettingsBuilder.tagProcessors.getOrPut(tag) { mutableListOf() }.add(action)
         }
     }
 

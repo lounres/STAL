@@ -6,6 +6,9 @@ import org.gradle.api.Project
 public interface ProjectDescriptor {
     public val project: Project
 
+    public val fullNameParts: List<String>
+    public val fullName: String get() = fullNameParts.joinToString(separator = ":", prefix = ":")
+
     public val parent: ProjectDescriptor?
     public val children: List<ChildProjectDescriptor>
 
@@ -17,10 +20,14 @@ public interface ProjectDescriptor {
 
 public interface RootProjectDescriptor: ProjectDescriptor {
     public override val parent: Nothing? get() = null
+
+    public override val fullNameParts: List<String> get() = emptyList()
 }
 
 public interface ChildProjectDescriptor: ProjectDescriptor {
     public override val parent: ProjectDescriptor
+
+    public val name: String
 }
 
 public interface ProjectHandler: ProjectDescriptor {
@@ -34,7 +41,9 @@ internal abstract class ProjectHandlerBuilder(
     override val tags: MutableSet<String>
 ): ProjectHandler {
     override val children: MutableList<ChildProjectHandlerBuilder> = mutableListOf()
-    fun child(project: Project, tags: MutableSet<String>) = ChildProjectHandlerBuilder(
+    fun child(name: String, project: Project, tags: MutableSet<String>) = ChildProjectHandlerBuilder(
+        name = name,
+        fullNameParts = fullNameParts + name,
         project = project,
         parent = this,
         tags = tags
@@ -47,6 +56,8 @@ internal class RootProjectHandlerBuilder(
 ) : ProjectHandlerBuilder(tags), RootProjectDescriptor
 
 internal class ChildProjectHandlerBuilder(
+    override val name: String,
+    override val fullNameParts: List<String>,
     override val project: Project,
     override val parent: ProjectHandlerBuilder,
     tags: MutableSet<String>,

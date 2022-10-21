@@ -11,6 +11,8 @@ internal interface ProjectStructureSpec {
 
 internal interface ChildProjectStructureSpec: ProjectStructureSpec {
     val parent: ProjectStructureSpec
+
+    val name: String get() = projectPath.last()
 }
 
 internal abstract class ProjectStructureSpecBuilder: ProjectStructureSpec {

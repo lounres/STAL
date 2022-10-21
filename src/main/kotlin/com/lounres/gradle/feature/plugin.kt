@@ -23,8 +23,8 @@ public class FeatureSettingsPlugin: Plugin<Settings> {
                     ?: error("Feature Plugin internal error: project handlers list still is not initialised")
 
                 val projectHandlers = processSctructureSpecs(rootProjectSpec)
-                processTagAssignment(projectHandlers, featuresManagementExtension.tagAssigners)
-                processTagProcessing(projectHandlers, featuresManagementExtension.tagProcessors)
+                processTagAssignment(projectHandlers, featuresManagementExtension.tagAssignmentSettings)
+                processTagProcessing(projectHandlers, featuresManagementExtension.tagProcessingSettings)
             }
         }
     }
@@ -91,14 +91,16 @@ internal fun Project.processSctructureSpecs(rootProjectSpec: ProjectStructureSpe
     fun ProjectHandlerBuilder.processChildrenWith(projectSpec: ProjectStructureSpec) {
         projectHandlers.add(this)
         for (childSpec in projectSpec.children)
-            child(project = project(childSpec.projectFullName), tags = childSpec.tags.toMutableSet()).processChildrenWith(childSpec)
+            child(name = childSpec.name, project = project(childSpec.projectFullName), tags = childSpec.tags.toMutableSet()).processChildrenWith(childSpec)
     }
     rootProjectHandler.processChildrenWith(rootProjectSpec)
 
     return projectHandlers
 }
 
-internal fun processTagAssignment(projectHandlers: List<ProjectHandler>, assigners: List<TagAssigner>) {
+internal fun processTagAssignment(projectHandlers: List<ProjectHandler>, settings: FeaturesManagementExtension.TagAssignmentSettings) {
+    val assigners = settings.tagAssigners
+
     val ticksLimit = projectHandlers.size * assigners.size
 
     var handlerIndex = 0
@@ -126,9 +128,9 @@ internal fun processTagAssignment(projectHandlers: List<ProjectHandler>, assigne
     }
 }
 
-internal fun processTagProcessing(projectDescriptors: List<ProjectDescriptor>, tagProcessors: Map<String, List<Project.() -> Unit>>) {
+internal fun processTagProcessing(projectDescriptors: List<ProjectDescriptor>, settings: FeaturesManagementExtension.TagProcessingSettings) {
     for (projectDescriptor in projectDescriptors)
         for (tag in projectDescriptor.tags)
-            for (processor in tagProcessors[tag] ?: emptyList())
+            for (processor in settings.tagProcessors[tag] ?: emptyList())
                 projectDescriptor.project.processor()
 }
