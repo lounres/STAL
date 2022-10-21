@@ -26,7 +26,7 @@ public class FeaturesManagementExtension {
         }
     }
 
-    public fun tagRules(block: TagAssignersCollector.() -> Unit): Unit = tagAssignersCollector.block()
+    public fun tagsAssignment(block: TagAssignersCollector.() -> Unit): Unit = tagAssignersCollector.block()
     public fun features(block: TagProcessorsCollector.() -> Unit): Unit = tagProcessorsCollector.block()
 }
 

@@ -10,7 +10,9 @@ public interface ProjectDescriptor {
     public val children: List<ChildProjectDescriptor>
 
     public val tags: Set<String>
-    public fun hasTags(vararg tags: String): Boolean = tags.all { it in this.tags }
+    public fun hasTag(tag: String): Boolean = tag in tags
+    public fun hasAllOfTags(vararg tags: String): Boolean = tags.all { it in this.tags }
+    public fun hasAnyOfTags(vararg tags: String): Boolean = tags.any { it in this.tags }
 }
 
 public interface RootProjectDescriptor: ProjectDescriptor {

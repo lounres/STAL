@@ -7,8 +7,8 @@ plugins {
 //    signing
 }
 
-group = "com.lounres.gradle.feature"
-version = "1.0.0"
+group = "com.lounres"
+version = "1.1.0"
 
 description = "Build tools for kotlin for science projects"
 
