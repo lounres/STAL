@@ -132,5 +132,5 @@ internal fun processTagProcessing(projectDescriptors: List<ProjectDescriptor>, s
     for (projectDescriptor in projectDescriptors)
         for (tag in projectDescriptor.tags)
             for (processor in settings.tagProcessors[tag] ?: emptyList())
-                projectDescriptor.project.processor()
+                projectDescriptor.project.beforeEvaluate(processor)
 }
