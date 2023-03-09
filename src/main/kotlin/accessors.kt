@@ -1,11 +1,12 @@
-import com.lounres.gradle.feature.FeaturesManagementExtension
-import com.lounres.gradle.feature.ProjectStructureDsl
+/*
+ * Copyright © 2023 Gleb Minaev
+ * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
+ */
+
+import com.lounres.gradle.stal.dsl.StalSettingsDsl
 import org.gradle.api.initialization.Settings
 import org.gradle.kotlin.dsl.getByName
 
 
-public val Settings.structuring: ProjectStructureDsl get() = extensions.getByName<ProjectStructureDsl>("structuring")
-public fun Settings.structuring(block: ProjectStructureDsl.() -> Unit): Unit = extensions.configure("structuring", block)
-
-public val Settings.featuresManagement: FeaturesManagementExtension get() = extensions.getByName<FeaturesManagementExtension>("featuresManagement")
-public fun Settings.featuresManagement(block: FeaturesManagementExtension.() -> Unit): Unit = extensions.configure("featuresManagement", block)
+public val Settings.stal: StalSettingsDsl get() = extensions.getByName<StalSettingsDsl>("stal")
+public fun Settings.stal(block: StalSettingsDsl.() -> Unit): Unit = extensions.configure("stal", block)
