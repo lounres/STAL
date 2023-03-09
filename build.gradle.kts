@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -8,9 +10,7 @@ plugins {
 }
 
 group = "com.lounres"
-version = "1.1.0"
-
-description = "Build tools for kotlin for science projects"
+version = "2.0.0"
 
 repositories {
     mavenCentral()
@@ -21,7 +21,7 @@ repositories {
 java.targetCompatibility = JavaVersion.VERSION_11
 
 kotlin {
-    explicitApiWarning()
+    explicitApi = Warning
 
     target.compilations.all {
         kotlinOptions {
@@ -30,6 +30,12 @@ kotlin {
     }
 
     sourceSets {
+        all {
+            languageSettings {
+                progressiveMode = true
+//                enableLanguageFeature("ContextReceivers")
+            }
+        }
         main {
             dependencies {
             }
@@ -48,11 +54,11 @@ tasks.test {
 
 gradlePlugin {
     plugins {
-        create("feature") {
-            id = "com.lounres.gradle.feature"
-            displayName = "Feature structuring plugin"
+        create("stal") {
+            id = "com.lounres.gradle.stal"
+            displayName = "STAL structuring and configuration plugin"
             description = "Settings plugin for flexible multi-module project configuration"
-            implementationClass = "com.lounres.gradle.feature.FeatureSettingsPlugin"
+            implementationClass = "com.lounres.gradle.stal.plugin.StalSettingsPlugin"
         }
     }
 }

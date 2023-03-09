@@ -1,6 +1,11 @@
 ### Lounres template
 # IntelliJ project files
 .idea
+!.idea/icon.svg
+!.idea/scopes
+!.idea/copyright
+!.idea/vcs.xml
+!.idea/runConfigurations
 *.iml
 out
 gen
