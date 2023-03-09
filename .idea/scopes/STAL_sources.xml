@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="STAL sources" pattern="file:kotlin//*||file:java//*||file:resources//*" />
+</component>
