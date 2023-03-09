@@ -75,5 +75,5 @@ internal fun actionPerforming(
     actionDescriptions: List<ActionDescription>,
 ) {
     for ((predicate, action) in actionDescriptions) for (frame in buildProjectFrameList)
-        if (frame.predicate()) frame.project.action()
+        if (frame.predicate()) frame.project.beforeEvaluate(action)
 }
