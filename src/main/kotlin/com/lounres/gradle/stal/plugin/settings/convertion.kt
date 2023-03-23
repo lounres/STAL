@@ -22,9 +22,8 @@ internal fun SettingsProjectFrameBuilder.buildWith(context: Settings, vertex: St
 
     vertex.subdirChildren.forEach { childVertex ->
         val searchDir = childVertex.searchDir ?: project.projectDir
-        for (dir in searchDir.listFiles(FileFilter { it.isDirectory && context.findProject(it) == null })!!) {
-            addChild(dir.name).buildWith(context, childVertex)
-        }
+        for (dir in searchDir.listFiles(FileFilter { it.isDirectory && context.findProject(it) == null })!!)
+            if (childVertex.includeIf(dir)) addChild(dir.name).buildWith(context, childVertex)
     }
 
     return this
