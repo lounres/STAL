@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.lounres"
-version = "1.0.0"
+version = "0.2.0"
 
 repositories {
     mavenCentral()
@@ -33,7 +33,7 @@ kotlin {
         all {
             languageSettings {
                 progressiveMode = true
-//                enableLanguageFeature("ContextReceivers")
+                enableLanguageFeature("ContextReceivers")
             }
         }
         main {

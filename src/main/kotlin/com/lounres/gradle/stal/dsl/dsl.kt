@@ -5,6 +5,7 @@
 
 package com.lounres.gradle.stal.dsl
 
+import com.lounres.gradle.stal.ProjectFrame
 import org.gradle.api.Project
 import org.gradle.api.initialization.ProjectDescriptor
 import java.io.File
@@ -20,13 +21,11 @@ internal annotation class StalSettingsDslMarker
 internal annotation class StalRootProjectDslMarker
 
 // region Common aliases
-@StalSettingsDslMarker
 @StalRootProjectDslMarker
-public typealias Predicate = ProjectFrame<Project>.() -> Boolean
+public typealias ProjectFramePredicate = ProjectFrame.() -> Boolean
 
-@StalSettingsDslMarker
 @StalRootProjectDslMarker
-public typealias Action = Project.() -> Unit
+public typealias ProjectAction = Project.() -> Unit
 // endregion
 
 // region Global DSL model
@@ -55,11 +54,13 @@ public interface StalRootProjectDsl {
 public typealias StructureDsl = DirDsl
 @StalSettingsDslMarker
 public interface DirDsl {
+    // Settings
+    public var defaultIncludeIf: ((File) -> Boolean)?
     // Building
     public operator fun String.invoke(tags: Collection<String> = emptyList(), subScope: (DirDsl.() -> Unit)? = null)
     public operator fun String.invoke(vararg tags: String = emptyArray(), subScope: (DirDsl.() -> Unit)? = null)
-    public fun subdirs(tags: List<String> = emptyList(), searchDir: File? = null, includeIf: (File) -> Boolean = { true }, subScope: (DirDsl.() -> Unit)? = null)
-    public fun subdirs(vararg tags: String = emptyArray(), searchDir: File? = null, includeIf: (File) -> Boolean = { true }, subScope: (DirDsl.() -> Unit)? = null)
+    public fun subdirs(tags: List<String> = emptyList(), searchDir: File? = null, includeIf: ((File) -> Boolean)? = null, subScope: (DirDsl.() -> Unit)? = null)
+    public fun subdirs(vararg tags: String = emptyArray(), searchDir: File? = null, includeIf: ((File) -> Boolean)? = null, subScope: (DirDsl.() -> Unit)? = null)
     // Tagging
     public fun taggedWith(vararg tags: String)
     // Configuring
@@ -71,37 +72,27 @@ public interface DirDsl {
 @StalSettingsDslMarker
 @StalRootProjectDslMarker
 public interface TagDsl {
-    public infix fun String.since(predicate: Predicate)
+    public fun String.dependsOn(vararg tags: String)
+    public infix fun String.dependsOn(tags: Collection<String>)
+    public infix fun String.dependsOn(tag: String)
 }
 // endregion
 
 // region Action
-// FIXME: Make me a value class instead of a data class
-@StalSettingsDslMarker
-@StalRootProjectDslMarker
-public data class WheneverDslAtom(
-    val predicate: Predicate
-)
-
 @StalSettingsDslMarker
 @StalRootProjectDslMarker
 public interface ActionDsl {
-    // Simple action descriptions
-    public fun on(tag: String, action: Action)
-    public fun onAny(vararg tags: String, action: Action)
-    public fun onAll(vararg tags: String, action: Action)
-    // Full-value action description
-    public fun whenever(predicate: Predicate) : WheneverDslAtom = WheneverDslAtom(predicate)
-    public infix fun WheneverDslAtom.imply(action: Action)
+    public infix fun String.does(action: ProjectAction)
+    public operator fun String.invoke(action: ProjectAction)
 }
 // endregion
 
 // region Look up
 @StalRootProjectDslMarker
 public interface LookUpDsl {
-    public val allProjectFrames: List<ProjectFrame<Project>>
+    public val allProjectFrames: List<ProjectFrame>
     public val allProject: List<Project>
-    public fun projectFramesThat(predicate: Predicate): List<ProjectFrame<Project>>
-    public fun projectsThat(predicate: Predicate): List<Project>
+    public fun projectFramesThat(predicate: ProjectFramePredicate): List<ProjectFrame>
+    public fun projectsThat(predicate: ProjectFramePredicate): List<Project>
 }
 // endregion
