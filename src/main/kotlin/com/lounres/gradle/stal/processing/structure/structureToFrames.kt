@@ -6,22 +6,20 @@
 package com.lounres.gradle.stal.processing.structure
 
 import com.lounres.gradle.stal.*
-import com.lounres.gradle.stal.ChildProjectFrameBuilder
-import com.lounres.gradle.stal.RootProjectFrameBuilder
 import org.gradle.api.Project
 
 
 internal data class StructureConversionResult(
-    val rootFrame: RootProjectFrame,
-    val allFrames: List<ProjectFrame>,
+    val rootFrame: MutableRootProjectFrame,
+    val allFrames: List<MutableProjectFrame>,
 )
 
 context(Project)
-internal fun RootStructureNode.toFrame(): StructureConversionResult {
-    val allFrames = mutableListOf<ProjectFrame>()
+internal fun RootStructureNode.convertToMutableProjectFrame(): StructureConversionResult {
+    val allFrames = mutableListOf<MutableProjectFrame>()
 
     val rootFrame = RootProjectFrameBuilder(
-        tags = this.tags,
+        tags = this.tags.toMutableSet(),
         project = rootProject,
     )
 
@@ -33,7 +31,7 @@ internal fun RootStructureNode.toFrame(): StructureConversionResult {
     ) {
         val childFrame = ChildProjectFrameBuilder(
             fullNameParts = childStructure.fullNameParts,
-            tags = childStructure.tags,
+            tags = childStructure.tags.toMutableSet(),
             project = project(childStructure.fullNameParts.toGradleName()),
             parent = parentFrame,
         )

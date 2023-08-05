@@ -10,12 +10,13 @@ import com.lounres.gradle.stal.collector.action.ActionsCollectorImpl
 import com.lounres.gradle.stal.collector.lookUp.LookUpDslImpl
 import com.lounres.gradle.stal.collector.structure.RootDescriptionNode
 import com.lounres.gradle.stal.collector.structure.StructureDslImpl
-import com.lounres.gradle.stal.collector.tag.TagDependency
 import com.lounres.gradle.stal.collector.tag.TagDependencyCollectorImpl
+import com.lounres.gradle.stal.collector.tag.TagPredicate
 import com.lounres.gradle.stal.dsl.*
-import com.lounres.gradle.stal.processing.structure.resolve
-import com.lounres.gradle.stal.processing.structure.toFrame
-import com.lounres.gradle.stal.processing.tag.process
+import com.lounres.gradle.stal.processing.structure.resolveProjectHierarchy
+import com.lounres.gradle.stal.processing.structure.convertToMutableProjectFrame
+import com.lounres.gradle.stal.processing.tag.applyActions
+import com.lounres.gradle.stal.processing.tag.processTags
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
 import org.gradle.kotlin.dsl.add
@@ -32,7 +33,7 @@ internal class StalDslImpl(
 
     override val tag: TagDsl = tagDslImpl
     override fun tag(block: TagDsl.() -> Unit) { tag.block() }
-    val tagDependencies: List<TagDependency> = tagDslImpl.tagDependencies
+    val tagPredicates: List<TagPredicate> = tagDslImpl.tagPredicates
 
     override val action: ActionDsl = actionsCollector
     override fun action(block: ActionDsl.() -> Unit) { action.block() }
@@ -48,24 +49,29 @@ public class StalSettingsPlugin: Plugin<Settings> {
 
         val gradle = settings.gradle
         gradle.settingsEvaluated {
-            val rootStructureNode = stalDslImpl.rootStructureVertex.resolve()
+            val rootStructureNode = stalDslImpl.rootStructureVertex.resolveProjectHierarchy()
 
             gradle.projectsLoaded {
                 rootProject {
+                    logger.info("[STAL] Structure is processed. Root project is loaded. Adding STAL extension to root project.")
                     extensions.add<StalRootProjectDsl>("stal", stalDslImpl)
 
-                    val (
-                        rootFrame,
-                        allFrames,
-                    ) = rootStructureNode.toFrame()
+                    logger.info("[STAL] Converting structure nodes to project frames.")
+                    val (rootFrame, allFrames) = rootStructureNode.convertToMutableProjectFrame()
 
+                    logger.info("[STAL] Making look-up accessible.")
                     stalDslImpl.lookUp.projectsFramesListProvider = allFrames
 
                     afterEvaluate {
-                        process(
-                            tagDependencies = stalDslImpl.tagDependencies,
-                            actionDescriptions = stalDslImpl.actionDescriptions,
-                            frames = allFrames
+                        logger.info("[STAL] Root project is evaluated. Processing tags.")
+                        processTags(
+                            allFrames,
+                            stalDslImpl.tagPredicates,
+                        )
+                        logger.info("[STAL] Applying actions.")
+                        applyActions(
+                            allFrames,
+                            stalDslImpl.actionDescriptions,
                         )
                     }
                 }

@@ -1,4 +1,4 @@
-rootProject.name = "STAL-gradle-plugin"
+rootProject.name = "STAL"
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {

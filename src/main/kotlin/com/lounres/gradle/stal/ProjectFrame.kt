@@ -13,7 +13,7 @@ internal fun List<String>.toGradleName(): String = joinToString(separator = "") 
 //
 
 // region Model
-public sealed interface ProjectFrame {
+public interface ProjectFrame {
     // Naming
     public val fullName: String get() = fullNameParts.toGradleName()
     public val fullNameParts: List<String>
@@ -45,22 +45,33 @@ public interface ChildProjectFrame : ProjectFrame {
 public fun <P> ProjectFrame.parentOrNull(): ProjectFrame? = if (this is ChildProjectFrame) parent else null
 // endregion
 
+// region Mutable model
+public interface MutableProjectFrame: ProjectFrame {
+    // Tags
+    public override val tags: MutableSet<String>
+}
+
+public interface MutableRootProjectFrame : MutableProjectFrame, RootProjectFrame
+
+public interface MutableChildProjectFrame : MutableProjectFrame, ChildProjectFrame
+// endregion
+
 // region Builders
-internal interface ProjectFrameBuilder: ProjectFrame {
+internal interface ProjectFrameBuilder: MutableProjectFrame {
     override val children: MutableSet<ChildProjectFrame>
 }
 
 internal class RootProjectFrameBuilder(
-    override val tags: Set<String>,
+    override val tags: MutableSet<String>,
     override val project: Project,
     override val children: MutableSet<ChildProjectFrame> = mutableSetOf(),
-) : RootProjectFrame, ProjectFrameBuilder
+) : MutableRootProjectFrame, ProjectFrameBuilder
 
 internal class ChildProjectFrameBuilder(
     override val fullNameParts: List<String>,
-    override val tags: Set<String>,
+    override val tags: MutableSet<String>,
     override val project: Project,
     override val parent: ProjectFrame,
     override val children: MutableSet<ChildProjectFrame> = mutableSetOf(),
-) : ChildProjectFrame, ProjectFrameBuilder
+) : MutableChildProjectFrame, ProjectFrameBuilder
 // endregion

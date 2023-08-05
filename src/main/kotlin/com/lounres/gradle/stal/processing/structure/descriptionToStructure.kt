@@ -54,28 +54,25 @@ internal class ChildStructureNodeBuilder(
 
 // region Resolution
 
-internal data class ExplicitChildDescriptionAndStructure(
+private data class ExplicitChildDescriptionAndStructure(
     val description: ExplicitChildDescriptionNode,
     val parentNode: StructureNodeBuilder,
     val parentDefaultIncludeIf: (File) -> Boolean,
 )
 
-internal data class SubdirChildDescriptionAndStructure(
+private data class SubdirChildDescriptionAndStructure(
     val description: SubdirChildDescriptionNode,
     val parentNode: StructureNodeBuilder,
     val parentDefaultIncludeIf: (File) -> Boolean,
 )
 
 context(Settings)
-internal fun RootDescriptionNode.resolve(): RootStructureNode {
-    val allNodes = mutableListOf<StructureNode>()
-
+internal fun RootDescriptionNode.resolveProjectHierarchy(): RootStructureNode {
     val rootStructureNode = RootStructureNodeBuilder(
         fullNameParts = listOf(),
         tags = this.tags.toMutableSet(),
         project = rootProject
     )
-    allNodes += rootStructureNode
     this.descriptorHandlers.forEach { rootStructureNode.project.it() }
     val rootDefaultIncludeIf = this.defaultIncludeIf ?: { true }
 
@@ -121,7 +118,7 @@ internal fun RootDescriptionNode.resolve(): RootStructureNode {
             ) = explicitModulesQueue.removeFirst()
 
             val childFullNameParts = parentNode.fullNameParts + childDescription.name
-            val childFullName = childFullNameParts.joinToString(separator = "") { ":$it" }
+            val childFullName = childFullNameParts.toGradleName()
             val childDefaultIncludeIf = childDescription.defaultIncludeIf ?: parentDefaultIncludeIf
 
             include(childFullName)
@@ -135,7 +132,6 @@ internal fun RootDescriptionNode.resolve(): RootStructureNode {
                 children = mutableSetOf(),
                 project = childProjectDescriptor,
             )
-            allNodes += childNode
             parentNode.children += childNode
 
             processChildren(
@@ -155,7 +151,7 @@ internal fun RootDescriptionNode.resolve(): RootStructureNode {
             val searchDir = subdirDescription.searchDir ?: parentNode.project.projectDir
             val childDefaultIncludeIf = subdirDescription.defaultIncludeIf ?: parentDefaultIncludeIf
             val includeIf = subdirDescription.includeIf ?: childDefaultIncludeIf
-            searchDir.listFiles(FileFilter { it.isDirectory && includeIf(it) })!!.forEach { childDir ->
+            searchDir.listFiles(FileFilter { it.isDirectory && includeIf(it) && findProject(it) == null })!!.forEach { childDir ->
                 val childFullNameParts = parentNode.fullNameParts + childDir.name
                 val childFullName = childFullNameParts.joinToString(separator = "") { ":$it" }
 
@@ -169,7 +165,6 @@ internal fun RootDescriptionNode.resolve(): RootStructureNode {
                     children = mutableSetOf(),
                     project = childProjectDescriptor,
                 )
-                allNodes += childNode
                 parentNode.children += childNode
 
                 processChildren(

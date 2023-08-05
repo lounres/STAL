@@ -5,28 +5,23 @@
 
 package com.lounres.gradle.stal.collector.tag
 
+import com.lounres.gradle.stal.dsl.ProjectFramePredicate
 import com.lounres.gradle.stal.dsl.TagDsl
 
 
-internal data class TagDependency(
-    val dependentTag: String,
-    val dependencyTag: String,
+internal data class TagPredicate(
+    val tag: String,
+    val predicate: ProjectFramePredicate
 )
 
 internal interface TagDependencyCollector {
-    val tagDependencies: List<TagDependency>
+    val tagPredicates: List<TagPredicate>
 }
 
 internal class TagDependencyCollectorImpl: TagDsl, TagDependencyCollector {
-    override val tagDependencies: MutableList<TagDependency> = mutableListOf()
+    override val tagPredicates: MutableList<TagPredicate> = mutableListOf()
 
-    override fun String.dependsOn(vararg tags: String) {
-        tagDependencies.addAll(tags.map { TagDependency(this, it) })
-    }
-    override fun String.dependsOn(tags: Collection<String>) {
-        tagDependencies.addAll(tags.map { TagDependency(this, it) })
-    }
-    override fun String.dependsOn(tag: String) {
-        tagDependencies.add(TagDependency(this, tag))
+    override fun String.since(predicate: ProjectFramePredicate) {
+        tagPredicates += TagPredicate(this, predicate)
     }
 }

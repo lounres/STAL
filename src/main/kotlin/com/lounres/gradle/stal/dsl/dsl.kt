@@ -72,18 +72,25 @@ public interface DirDsl {
 @StalSettingsDslMarker
 @StalRootProjectDslMarker
 public interface TagDsl {
-    public fun String.dependsOn(vararg tags: String)
-    public infix fun String.dependsOn(tags: Collection<String>)
-    public infix fun String.dependsOn(tag: String)
+    public infix fun String.since(predicate: ProjectFramePredicate)
 }
 // endregion
 
 // region Action
 @StalSettingsDslMarker
 @StalRootProjectDslMarker
+@JvmInline
+public value class CaseDslAtom(
+    public val predicate: ProjectFramePredicate
+)
+
+@StalSettingsDslMarker
+@StalRootProjectDslMarker
 public interface ActionDsl {
     public infix fun String.does(action: ProjectAction)
     public operator fun String.invoke(action: ProjectAction)
+    public fun case(predicate: ProjectFramePredicate): CaseDslAtom = CaseDslAtom(predicate)
+    public infix fun CaseDslAtom.implies(action: ProjectAction)
 }
 // endregion
 
