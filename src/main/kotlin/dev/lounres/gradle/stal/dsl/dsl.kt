@@ -3,9 +3,9 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.gradle.stal.dsl
+package dev.lounres.gradle.stal.dsl
 
-import com.lounres.gradle.stal.ProjectFrame
+import dev.lounres.gradle.stal.ProjectFrame
 import org.gradle.api.Project
 import org.gradle.api.initialization.ProjectDescriptor
 import java.io.File

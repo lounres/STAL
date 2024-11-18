@@ -3,12 +3,12 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.gradle.stal.collector.action
+package dev.lounres.gradle.stal.collector.action
 
-import com.lounres.gradle.stal.dsl.ProjectAction
-import com.lounres.gradle.stal.dsl.ActionDsl
-import com.lounres.gradle.stal.dsl.CaseDslAtom
-import com.lounres.gradle.stal.dsl.ProjectFramePredicate
+import dev.lounres.gradle.stal.dsl.ProjectAction
+import dev.lounres.gradle.stal.dsl.ActionDsl
+import dev.lounres.gradle.stal.dsl.CaseDslAtom
+import dev.lounres.gradle.stal.dsl.ProjectFramePredicate
 
 
 internal data class ActionDescription(

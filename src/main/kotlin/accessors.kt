@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-import com.lounres.gradle.stal.dsl.StalSettingsDsl
+import dev.lounres.gradle.stal.dsl.StalSettingsDsl
 import org.gradle.api.initialization.Settings
 import org.gradle.kotlin.dsl.getByName
 

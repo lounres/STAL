@@ -11,7 +11,7 @@ STAL ("Structure, Tag, Action, Look up") is a Gradle plugin that helps you in st
 Apply the plugin in your `settings.gradle.kts` file:
 ```kotlin
 plugins {
-    id("com.lounres.gradle.stal") version "<your version>"
+    id("dev.lounres.gradle.stal") version "<your version>"
 }
 ```
 
@@ -61,7 +61,7 @@ stal {
 stal {
     action {
         // Apply configuration to modules with the tag.
-        on("kotlin js") {
+        "kotlin js" {
             apply<KotlinJsPluginWrapper>()
             configure<KotlinJsProjectExtension> {
                 ...

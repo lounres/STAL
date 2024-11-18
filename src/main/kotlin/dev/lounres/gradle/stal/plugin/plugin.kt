@@ -3,20 +3,20 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.gradle.stal.plugin
+package dev.lounres.gradle.stal.plugin
 
-import com.lounres.gradle.stal.collector.action.ActionDescription
-import com.lounres.gradle.stal.collector.action.ActionsCollectorImpl
-import com.lounres.gradle.stal.collector.lookUp.LookUpDslImpl
-import com.lounres.gradle.stal.collector.structure.RootDescriptionNode
-import com.lounres.gradle.stal.collector.structure.StructureDslImpl
-import com.lounres.gradle.stal.collector.tag.TagDependencyCollectorImpl
-import com.lounres.gradle.stal.collector.tag.TagPredicate
-import com.lounres.gradle.stal.dsl.*
-import com.lounres.gradle.stal.processing.structure.resolveProjectHierarchy
-import com.lounres.gradle.stal.processing.structure.convertToMutableProjectFrame
-import com.lounres.gradle.stal.processing.tag.applyActions
-import com.lounres.gradle.stal.processing.tag.processTags
+import dev.lounres.gradle.stal.collector.action.ActionDescription
+import dev.lounres.gradle.stal.collector.action.ActionsCollectorImpl
+import dev.lounres.gradle.stal.collector.lookUp.LookUpDslImpl
+import dev.lounres.gradle.stal.collector.structure.RootDescriptionNode
+import dev.lounres.gradle.stal.collector.structure.StructureDslImpl
+import dev.lounres.gradle.stal.collector.tag.TagDependencyCollectorImpl
+import dev.lounres.gradle.stal.collector.tag.TagPredicate
+import dev.lounres.gradle.stal.processing.structure.resolveProjectHierarchy
+import dev.lounres.gradle.stal.processing.structure.convertToMutableProjectFrame
+import dev.lounres.gradle.stal.processing.tag.applyActions
+import dev.lounres.gradle.stal.processing.tag.processTags
+import dev.lounres.gradle.stal.dsl.*
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
 import org.gradle.kotlin.dsl.add

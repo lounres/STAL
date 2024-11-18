@@ -3,11 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.gradle.stal.processing.tag
+package dev.lounres.gradle.stal.processing.tag
 
-import com.lounres.gradle.stal.MutableProjectFrame
-import com.lounres.gradle.stal.collector.action.ActionDescription
-import com.lounres.gradle.stal.collector.tag.TagPredicate
+import dev.lounres.gradle.stal.MutableProjectFrame
+import dev.lounres.gradle.stal.collector.action.ActionDescription
+import dev.lounres.gradle.stal.collector.tag.TagPredicate
 
 
 internal fun processTags(

@@ -3,18 +3,20 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.gradle.stal.processing.structure
+package dev.lounres.gradle.stal.processing.structure
 
-import com.lounres.gradle.stal.collector.structure.DescriptionNode
-import com.lounres.gradle.stal.collector.structure.ExplicitChildDescriptionNode
-import com.lounres.gradle.stal.collector.structure.RootDescriptionNode
-import com.lounres.gradle.stal.collector.structure.SubdirChildDescriptionNode
-import com.lounres.gradle.stal.toGradleName
+import dev.lounres.gradle.stal.collector.structure.DescriptionNode
+import dev.lounres.gradle.stal.collector.structure.ExplicitChildDescriptionNode
+import dev.lounres.gradle.stal.collector.structure.RootDescriptionNode
+import dev.lounres.gradle.stal.collector.structure.SubdirChildDescriptionNode
+import dev.lounres.gradle.stal.toGradleName
 import org.gradle.api.initialization.ProjectDescriptor
 import org.gradle.api.initialization.Settings
 import java.io.File
 import java.io.FileFilter
 
+
+internal const val TagsStalFileName = ".tags.stal"
 
 // region Models
 internal interface StructureNode {
@@ -68,9 +70,13 @@ private data class SubdirChildDescriptionAndStructure(
 
 context(Settings)
 internal fun RootDescriptionNode.resolveProjectHierarchy(): RootStructureNode {
+    val rootProjectTagFile = rootProject.projectDir.resolve(TagsStalFileName)
+    val localTags =
+        if (rootProjectTagFile.isFile && rootProjectTagFile.exists()) rootProjectTagFile.readText().split('\n').toSet()
+        else emptySet()
     val rootStructureNode = RootStructureNodeBuilder(
         fullNameParts = listOf(),
-        tags = this.tags.toMutableSet(),
+        tags = this.tags + localTags,
         project = rootProject
     )
     this.descriptorHandlers.forEach { rootStructureNode.project.it() }
@@ -123,11 +129,16 @@ internal fun RootDescriptionNode.resolveProjectHierarchy(): RootStructureNode {
 
             include(childFullName)
             val childProjectDescriptor = project(childFullName)
+            childProjectDescriptor.projectDir = parentNode.project.projectDir.resolve(childDescription.name)
             childDescription.descriptorHandlers.forEach { childProjectDescriptor.it() }
             childProjectDescriptor.projectDir.mkdirs()
+            val childProjectTagFile = childProjectDescriptor.projectDir.resolve(TagsStalFileName)
+            val localTags =
+                if (childProjectTagFile.isFile && childProjectTagFile.exists()) childProjectTagFile.readText().split('\n').toSet()
+                else emptySet()
             val childNode = ChildStructureNodeBuilder(
                 fullNameParts = childFullNameParts,
-                tags = childDescription.tags.toMutableSet(),
+                tags = childDescription.tags + localTags,
                 parent = parentNode,
                 children = mutableSetOf(),
                 project = childProjectDescriptor,
@@ -157,10 +168,15 @@ internal fun RootDescriptionNode.resolveProjectHierarchy(): RootStructureNode {
 
                 include(childFullName)
                 val childProjectDescriptor = project(childFullName)
+                childProjectDescriptor.projectDir = childDir
                 subdirDescription.descriptorHandlers.forEach { childProjectDescriptor.it() }
+                val childProjectTagFile = childProjectDescriptor.projectDir.resolve(TagsStalFileName)
+                val localTags =
+                    if (childProjectTagFile.isFile && childProjectTagFile.exists()) childProjectTagFile.readText().split('\n').toSet()
+                    else emptySet()
                 val childNode = ChildStructureNodeBuilder(
                     fullNameParts = childFullNameParts,
-                    tags = subdirDescription.tags.toMutableSet(),
+                    tags = subdirDescription.tags + localTags,
                     parent = parentNode,
                     children = mutableSetOf(),
                     project = childProjectDescriptor,

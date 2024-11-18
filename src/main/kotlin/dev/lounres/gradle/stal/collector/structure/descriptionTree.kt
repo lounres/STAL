@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.gradle.stal.collector.structure
+package dev.lounres.gradle.stal.collector.structure
 
 import org.gradle.api.initialization.ProjectDescriptor
 import java.io.File

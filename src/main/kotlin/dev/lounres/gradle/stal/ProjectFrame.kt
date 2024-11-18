@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.gradle.stal
+package dev.lounres.gradle.stal
 
 import org.gradle.api.Project
 
@@ -37,12 +37,12 @@ public interface RootProjectFrame : ProjectFrame {
 }
 
 public interface ChildProjectFrame : ProjectFrame {
-    public val name: String get() = fullNameParts.first()
+    public val name: String get() = fullNameParts.last()
     // Hierarchy
     public val parent: ProjectFrame
 }
 
-public fun <P> ProjectFrame.parentOrNull(): ProjectFrame? = if (this is ChildProjectFrame) parent else null
+public fun ProjectFrame.parentOrNull(): ProjectFrame? = if (this is ChildProjectFrame) parent else null
 // endregion
 
 // region Mutable model

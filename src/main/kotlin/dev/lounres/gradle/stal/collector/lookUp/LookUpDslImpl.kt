@@ -3,11 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.gradle.stal.collector.lookUp
+package dev.lounres.gradle.stal.collector.lookUp
 
-import com.lounres.gradle.stal.ProjectFrame
-import com.lounres.gradle.stal.dsl.LookUpDsl
-import com.lounres.gradle.stal.dsl.ProjectFramePredicate
+import dev.lounres.gradle.stal.ProjectFrame
+import dev.lounres.gradle.stal.dsl.LookUpDsl
+import dev.lounres.gradle.stal.dsl.ProjectFramePredicate
 import org.gradle.api.Project
 
 

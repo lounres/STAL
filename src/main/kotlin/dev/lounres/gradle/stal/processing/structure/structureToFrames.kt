@@ -3,9 +3,9 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.gradle.stal.processing.structure
+package dev.lounres.gradle.stal.processing.structure
 
-import com.lounres.gradle.stal.*
+import dev.lounres.gradle.stal.*
 import org.gradle.api.Project
 
 

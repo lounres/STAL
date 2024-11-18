@@ -3,10 +3,10 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.gradle.stal.collector.tag
+package dev.lounres.gradle.stal.collector.tag
 
-import com.lounres.gradle.stal.dsl.ProjectFramePredicate
-import com.lounres.gradle.stal.dsl.TagDsl
+import dev.lounres.gradle.stal.dsl.ProjectFramePredicate
+import dev.lounres.gradle.stal.dsl.TagDsl
 
 
 internal data class TagPredicate(
