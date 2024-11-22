@@ -2,16 +2,14 @@ import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 
 
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.dokka)
+    alias(versions.plugins.kotlin.jvm)
     `java-gradle-plugin`
     `kotlin-dsl`
+    alias(versions.plugins.dokka)
     `maven-publish`
     signing
+    alias(versions.plugins.nexus.publish.plugin)
 }
-
-group = "dev.lounres"
-version = "0.4.0"
 
 repositories {
     mavenCentral()
@@ -89,8 +87,8 @@ publishing {
     publications.withType<MavenPublication> {
         pom {
             name = "STAL Gradle plugin"
-            description = "Set of libraries for experimental mathematics"
-            url = "https://github.com/lounres/kone"
+            description = "Gradle plugin for declarative definition of complex modules structure"
+            url = "https://github.com/lounres/STAL"
 
             licenses {
                 license {
@@ -127,6 +125,15 @@ gradlePlugin {
             description = "Settings plugin for flexible multi-module project configuration"
             tags = listOf("settings", "mutlimodule")
             implementationClass = "dev.lounres.gradle.stal.plugin.StalSettingsPlugin"
+        }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
         }
     }
 }
